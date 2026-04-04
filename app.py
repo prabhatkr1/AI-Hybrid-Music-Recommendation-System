@@ -1,3 +1,8 @@
+
+import streamlit as st
+from weather_fetcher import get_weather
+from spotify_api import get_music_recommendations
+# from mood_detector import detect_emotion  # Uncomment if using webcam mood detection
 import streamlit as st
 
 st.set_page_config(page_title="AI Music Recommender", layout="wide")
@@ -61,13 +66,38 @@ input, select {
 
 </style>
 """, unsafe_allow_html=True)
-import streamlit as st
-from weather_fetcher import get_weather
-from spotify_api import get_music_recommendations
-# from mood_detector import detect_emotion  # Uncomment if using webcam mood detection
 
-st.title("🎵 AI-Based Hybrid Music Recommender")
 
+st.markdown('<div class="title">🎧 AI Hybrid Music Recommender</div>', unsafe_allow_html=True)
+
+col1, col2 = st.columns([1,1])
+
+with col1:
+    city = st.text_input("🌍 Enter your city")
+    mood = st.selectbox("😊 Select mood", ["Happy", "Sad", "Energetic", "Calm"])
+
+    recommend = st.button("🚀 Recommend Music")
+
+with col2:
+    st.markdown('<div class="glass">', unsafe_allow_html=True)
+
+    if recommend:
+        st.success(f"Selected Mood: {mood}")
+
+        weather, temp = get_weather(city)
+        st.info(f"Weather: {weather}, Temp: {temp}°C")
+
+        songs = get_music_recommendations(mood, weather)
+
+        st.markdown("### 🎶 Recommended Songs")
+        for song in songs:
+            st.markdown(f"""
+            <div class="result-box">
+                🎵 {song}
+            </div>
+            """, unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 city = st.text_input("Enter your city for weather", "Delhi")
 mood = st.selectbox("Select your mood", ["Happy", "Sad", "Energetic", "Calm"])
 
